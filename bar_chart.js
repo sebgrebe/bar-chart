@@ -86,7 +86,7 @@ $(document).ready(function() {
                                           .attr('class','bar')
 
                                    //tooltips
-                                   svg.selectAll('g')
+                                   svg.selectAll('rect')
                                           .data(dataset)
                                           .on('mouseover',(d,i) =>
                                                  svg.append('foreignObject')
@@ -94,18 +94,19 @@ $(document).ready(function() {
                                                  .attr("y", yScale(d[1]))
                                                  .attr('width', 100)
                                                  .attr('height',45)
+                                                 .append('xhtml:div')
                                                  .html('<b>Year: '+d[0].substr(0,7)+'</b></br>'+'GDP: '+d[1])
                                                  .attr('class','tip')
                                                  )
                                           .on('mouseout',() =>
-                                                 svg.selectAll('foreignObject.tip').remove()
+                                                 svg.selectAll('div.tip').remove()
                                                  )
 
                                    //y-label
                                    svg.append('text')
                                    .text("US Gross Domestic Product (in 1bn US-$)")
                                    .attr('x',20)
-                                   .attr('y',80)
+                                   .attr('y',50)
                                    .attr('class','label_y')
 
                                    //x-label
