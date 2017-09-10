@@ -1,0 +1,154 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>US GDP</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	
+	<!-- jQuery -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+
+	<!-- Bootstrap-->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+	<!-- CSS Stylesheet-->
+	<link rel="stylesheet" href="bar_chart.css" type="text/css">
+
+	<!--Babel compiler-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.24/browser.js"></script>
+
+	<!--Font Awesome-->
+	<script src="https://use.fontawesome.com/9ab0b6d75e.js"></script>
+
+	<!--D3 Library-->
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+
+</head>
+<body>
+
+	<script type="text/babel">
+	$(document).ready(function() {
+	$.ajax({
+				url: 'https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/GDP-data.json',
+				dataType: 'json',
+				error: (xhr,errorType) => {
+					alert(errorType)
+				},
+				success: (data) => {
+					const dataset = data['data'];
+					console.log(dataset);
+					const l = 70; //space to left of graph
+					const r = 50; //space to right of graph
+					const b = 50; //space below graph
+					const w = dataset.length*3 + l + r;
+					const h = 470 + b;
+					const graph = document.getElementById('graph');
+					const svg = d3.select(graph)
+								.append('svg')
+								.attr('width',w)
+								.attr('height',h);
+
+					//bars
+					svg.selectAll('rect')
+						.data(dataset)
+						.enter()
+						.append('g')
+					svg.selectAll('g')
+						
+       					
+       				svg.selectAll('g')
+       					.data(dataset)
+						.append('rect')
+						.attr("x", (d, i) => i * 3 + l)
+       					.attr("y", (d, i) => (h-b) - (d[1]/40))
+       					.attr('width',3)
+       					.attr('height',(d) => (d[1]/40))
+       					.attr('fill','DeepSkyBlue')
+       					.attr('class','bar')
+
+
+       				svg.selectAll('g')
+       					.data(dataset)
+       					.on('mouseover',(d,i) =>
+       						svg.append('foreignObject')
+							.attr("x", i * 3 + l)
+       						.attr("y", (h-b) - 20 - (d[1]/40))
+       						.attr('width', 120)
+       						.attr('height',40)
+       						.html('<b>Year: '+d[0].substr(0,7)+'</b></br>'+'GDP: '+d[1])
+       						.attr('class','tip')
+                                                 )
+       					.on('mouseout',() =>
+       						svg.selectAll('foreignObject.tip').remove()
+       						)
+
+       			
+       				//x-scale
+       				svg.selectAll('text')
+       					.data(dataset)
+       					.enter()
+       					.append('text')
+       					.text((d) => {
+       						var year = d[0].substr(0,4);
+       						var month = d[0].charAt(5)+d[0].charAt(6);
+       						if ((year%5 === 0) && month === '01') {
+       							console.log(year)
+       							return year
+       						}
+       					})
+       					.attr('x', (d,i) => i*3 + l)
+       					.attr('y', (d,i) => h-b+20)
+       					.attr('height',20)
+       					.attr('class','scale')
+
+       				//y-scale	
+       				for (var i=0;i<10;i++) {
+       					console.log(i*2000)
+       					svg.append('text')
+       					.text(i*2000)
+       					.attr('x', l-5)
+       					.attr('y', h-i*50-b)
+       					.attr('height',20)
+       					.style('text-anchor','end')
+       				}
+
+       				//y-label
+       				svg.append('text')
+       				.text("US Gross Domestic Product (in 1bn US-$)")
+       				.attr('x',l-55)
+       				.attr('y',100)
+       				.attr('class','label_y')
+
+       				//x-label
+       				svg.append('text')
+       				.text("Year")
+       				.attr('x',450)
+       				.attr('y',h)
+       				.attr('class','label_x')
+
+       				//y-axis
+       				svg.append('line')
+       				.attr('x1',l)
+       				.attr('y1',h-b)
+       				.attr('x2',l)
+       				.attr('y2',0)
+       				.attr("stroke-width", 1)
+					.attr("stroke", "black");
+
+					//x-axis
+       				svg.append('line')
+       				.attr('x1',l)
+       				.attr('y1',h-b)
+       				.attr('x2',w-r)
+       				.attr('y2',h-b)
+       				.attr("stroke-width", 1)
+					.attr("stroke", "black");
+       			}       				
+			});
+	})
+</script>
+<h1 class="title">US GDP, 1947-2015</h1>
+<div id="graph" class="graph"></div>
+</body>
+</html>
