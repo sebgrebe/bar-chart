@@ -94,12 +94,11 @@ $(document).ready(function() {
                                                  .attr("y", yScale(d[1]))
                                                  .attr('width', 100)
                                                  .attr('height',45)
-                                                 .append('xhtml:div')
                                                  .html('<b>Year: '+d[0].substr(0,7)+'</b></br>'+'GDP: '+d[1])
                                                  .attr('class','tip')
                                                  )
                                           .on('mouseout',() =>
-                                                 svg.selectAll('div.tip').remove()
+                                                 svg.selectAll('foreignObject.tip').remove()
                                                  )
 
                                    //y-label
