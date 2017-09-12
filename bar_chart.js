@@ -62,11 +62,6 @@ $(document).ready(function() {
                                    const xAxis = d3.axisBottom(xScale).tickFormat(d3.format("d"))
                                    const yAxis = d3.axisLeft(yScale)
                                    const bar_width = (w-padding_left-padding_right)/dataset.length;
-
-                                   svg.selectAll('g')
-                                          .data(dataset)
-                                          .enter()
-                                          .append('g')
                                    
                                    //x-Axis
                                    svg.append('g')
@@ -79,12 +74,13 @@ $(document).ready(function() {
                                           .call(yAxis)  
                                    
                                    //bars
-                                   svg.selectAll('g')
+                                   svg.selectAll('rect')
                                           .data(dataset)
+                                          .enter()
                                           .append('rect')
                                           .attr("x", (d) => xScale(d[2]))
                                           .attr("y", (d) => yScale(d[1]))
-                                          .attr('width',bar_width)
+                                          .attr('width',3)
                                           .attr('height',(d) => h-yScale(d[1])-padding_bottom)
                                           .attr('fill','DeepSkyBlue')
                                           .attr('class','bar')
@@ -103,7 +99,7 @@ $(document).ready(function() {
                                                  .attr('class','tip')
                                                  )
                                           .on('mouseout',() =>
-                                                 svg.selectAll('div.tip').remove()
+                                                 svg.selectAll('foreignObject').remove()
                                                  )
 
                                    //y-label
