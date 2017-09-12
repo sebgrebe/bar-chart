@@ -21,15 +21,15 @@ $(document).ready(function() {
                                    //turns date into number, i.e., '1957-04' into 1957.25
                                    function yearNumber(date) {
                                           var year = date.substr(0,4);
-                                          var month = date.substr(6,7);
+                                          var month = date.substr(5);
                                           var month_value;  
-                                          if (month === '01') {
+                                          if (month === '01-01') {
                                                  month_value = 0
                                           }
-                                          else if (month === '04') {
+                                          else if (month === '04-01') {
                                                  month_value = 0.25
                                           }
-                                          else if (month === '07') {
+                                          else if (month === '07-01') {
                                                  month_value = 0.5
                                           }
                                           else {
@@ -37,8 +37,12 @@ $(document).ready(function() {
                                           }
                                           return parseInt(year) + month_value
                                    }
-                                   const year_earliest = dataset[0][0].substr(0,4);
-                                   const year_latest = yearNumber(dataset[dataset.length-1][0])
+                                   for (var i=0;i<dataset.length;i++) {
+                                          var year_dateformat = dataset[i][0];
+                                          dataset[i][2] = yearNumber(year_dateformat)
+                                   }
+                                   const year_earliest = dataset[0][2]
+                                   const year_latest = dataset[dataset.length-1][2]
                                    function gatherGdps(data) {
                                           var gdps = [];
                                           for (var i=0;i<dataset.length;i++) {
@@ -78,9 +82,9 @@ $(document).ready(function() {
                                    svg.selectAll('g')
                                           .data(dataset)
                                           .append('rect')
-                                          .attr("x", (d, i) => i*bar_width + padding_left)
-                                          .attr("y", (d, i) => yScale(d[1]))
-                                          .attr('width',3)
+                                          .attr("x", (d) => xScale(d[2]))
+                                          .attr("y", (d) => yScale(d[1]))
+                                          .attr('width',bar_width)
                                           .attr('height',(d) => h-yScale(d[1])-padding_bottom)
                                           .attr('fill','DeepSkyBlue')
                                           .attr('class','bar')
@@ -90,7 +94,7 @@ $(document).ready(function() {
                                           .data(dataset)
                                           .on('mouseover',(d,i) =>
                                                  svg.append('foreignObject')
-                                                 .attr("x", i*bar_width + padding_left)
+                                                 .attr("x", xScale(d[2]) + 10)
                                                  .attr("y", yScale(d[1]))
                                                  .attr('width', 100)
                                                  .attr('height',45)
